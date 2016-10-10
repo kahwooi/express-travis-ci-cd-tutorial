@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Todo</title>
+	<link rel='stylesheet' href='/libs/bootstrap/dist/css/bootstrap.min.css' />
+	<link rel='stylesheet' href='/css/style.css' />
+</head>
+<body>
+	<div class="container">
+        <div id="todos">
+            <ul class="list-group">
+                <h3>todos</h3>
+                <li v-for="(task, index) in tasks" class="list-group-item">
+                <span @dblclick="editTask = task" v-show="task != editTask" v-bind:class="{ 'text-primary': task.completed }">
+                    <span @click="completeTask(index, task.id, task.title, !task.completed)" class="glyphicon glyphicon-ok"></span>
+                        {{ task.title }} 
+                    <span @click="removeTask(index, task.id)" class="close">&times;</span>
+                </span>
+                <input v-show="task == editTask" v-model="editTask.title" @keyup.enter="updateTask(task.id, editTask.title)" class="form-control" type="text">
+                </li>
+            </ul>
+
+            <form @submit.prevent @submit="addTask">
+                <input v-model="newTask" class="form-control" type="text" placeholder="Add some task">
+            </form>
+        </div>
+    </div>
+    <script src="/libs/vue/dist/vue.min.js"></script>
+    <script src="/libs/vue-resource/dist/vue-resource.min.js"></script> 
+    <script>
+        var vm = new Vue({
+            el: '#todos',
+            created: function () {
+                this.loadTask();
+            },
+            data: {
+                tasks: [],
+                newTask: '',
+                editTask: []
+            },
+            methods: {
+                loadTask() {
+                    this.$http.get('/task').then(function(res) {
+                        if(res.body.status === 'fail'){
+                            this.tasks = [];
+                        } else {
+                            this.tasks = res.body.data;
+                        }
+                    }, function(err) {
+                        this.tasks = [];
+                    });
+                },
+                addTask() {
+                    this.$http.post('/task', {title: this.newTask, completed: 0}).then(function(res) {
+                         if(res.body.status === 'success'){
+                            this.tasks.push(res.body.data);
+                            this.newTask = '';
+                        } 
+                    }, function(err) {
+                        this.newTask = '';
+                    });
+                },
+                 removeTask (index, id) {
+                    this.$http.delete('/task/' + id).then(function(res) {
+                        if(res.body.status === 'success'){
+                            this.tasks.splice(index, 1);
+                        } 
+                    }, function(err) {
+                    });
+                },
+                updateTask(id, editTitle) {
+                    this.$http.put('/task/' + id, {title: editTitle, completed: 0 }).then(function(res) {
+                        if(res.body.status === 'success'){
+                            this.editTask = [];
+                        } 
+                    }, function(err) {
+                        this.editTask = null
+                    });
+                },
+                completeTask(index, id, title, completed) {
+                    this.$http.put('/task/' + id, {title: title, completed: completed}).then(function(res) {
+                        if(res.body.status === 'success'){
+                            Vue.set(this.tasks, index, res.body.data)
+                        } 
+                    }, function(err) {
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+</html>

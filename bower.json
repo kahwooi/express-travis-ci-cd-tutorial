@@ -1,0 +1,24 @@
+{
+  "name": "express-travis-ci-azure-tutorial",
+  "description": "Continuous Integration with Travis CI and deploy to Azure Web App",
+  "main": "app.js",
+  "authors": [
+    "Kelvin Tan"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "node",
+    "express",
+    "git",
+    "github",
+    "travis-ci",
+    "azure"
+  ],
+  "homepage": "https://kahwooi.github.io/2016-07-07/expressjs-travis-ci-azure-web-app/",
+  "dependencies": {
+    "vue": "^2.0.1",
+    "bootstrap": "^3.3.7",
+    "jquery": "^3.1.1",
+    "vue-resource": "^1.0.3"
+  }
+}
