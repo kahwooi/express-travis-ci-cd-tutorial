@@ -4,7 +4,7 @@ jsendie = require('jsendie'),
 path = require('path'),
 app = express(),
 Task = require('./app/models/task'),
-PORT = 3000;
+PORT = process.env.PORT || 3000;
 
 // view engine setup
 app.set('views', path.join(__dirname, 'app/views'));
