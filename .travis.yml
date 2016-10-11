@@ -9,5 +9,5 @@ deploy:
   provider: azure_web_apps
   on:
     branch: master 
-    node: "6.1"
+    node: "4.4"
   verbose: true
